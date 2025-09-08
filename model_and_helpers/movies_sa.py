@@ -23,7 +23,7 @@ def run_skmodel(model):
     print("Transforming the data...")
     vectorizer = TfidfVectorizer(max_features=1000)
     X_train_vec = vectorizer.fit_transform(tqdm.tqdm(X_train_))
-    X_test_vec = vectorizer.fit_transform(tqdm.tqdm(X_test_))
+    X_test_vec = vectorizer.transform(tqdm.tqdm(X_test_))
     print(f"Initializing the {model} model...")
     model.fit(X_train_vec, y_train_)
     print("Making predictions and calculating accuracy...")
@@ -33,12 +33,14 @@ def run_skmodel(model):
     print(f"Accuracy of the model: {accuracy}")
 
 
-def run_pytorch_model(nn_model, X_train_, X_val_, y_train_, y_val_):
+def run_pytorch_model(nn_model):
 
+    X_train, X_temp, y_train, y_temp = load_data()
+    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=42)
     word_to_idx = {word: idx + 1 for idx, word in enumerate(nn_model.wv_model.index_to_key)}
 
-    datasets_X = [X_train_, X_val_]
-    datasets_y = [y_train_, y_val_]
+    datasets_X = [X_train, X_val]
+    datasets_y = [y_train, y_val]
     tensor_datasets = []
 
     for (X, y) in zip(datasets_X, datasets_y):
@@ -71,14 +73,5 @@ def run_pytorch_model_test(nn_model, X_test_, y_test_):
 
 if __name__ == "__main__":
     # run_skmodel(model=SVC(random_state=42))
-    X_train, X_temp, y_train, y_temp = load_data()
-    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=42)
-    nn_ = NeuralNet()
-    run_pytorch_model(nn_model=nn_,
-                      X_train_=X_train,
-                      X_val_=X_val,
-                      y_train_=y_train,
-                      y_val_=y_val)
-    # run_pytorch_model_test(nn_model=nn_,
-    #                        X_test_=X_test,
-    #                        y_test_=y_test)
+    run_pytorch_model(nn_model=NeuralNet())
+    # run_pytorch_model_test(nn_model=NeuralNet())
