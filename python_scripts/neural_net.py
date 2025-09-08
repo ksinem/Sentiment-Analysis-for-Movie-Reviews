@@ -15,7 +15,7 @@ class NeuralNet(nn.Module):
         self.activation_func = nn.ReLU()
         self.optimizer = Adam(self.parameters(), lr=0.001)
         self.loss = nn.CrossEntropyLoss()
-        self.epochs = 5
+        self.epochs = 10
 
     def forward(self, text):
         embedded_text = self.embedding(text).mean(dim=1)
