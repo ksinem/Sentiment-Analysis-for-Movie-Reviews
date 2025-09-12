@@ -10,12 +10,12 @@ class NeuralNet(nn.Module):
         super().__init__()
         self.wv_model = api.load("glove-wiki-gigaword-300")
         self.embedding = nn.Embedding(len(self.wv_model) + 1, 300)
-        self.hidden_layer1 = nn.Linear(300, 256)
-        self.hidden_layer2 = nn.Linear(256, 2)
-        self.activation_func = nn.ReLU()
-        self.optimizer = Adam(self.parameters(), lr=0.001)
+        self.hidden_layer1 = nn.Linear(300, 64)
+        self.hidden_layer2 = nn.Linear(64, 2)
+        self.activation_func = nn.PReLU()
+        self.optimizer = Adam(self.parameters(), lr=0.000015)
         self.loss = nn.CrossEntropyLoss()
-        self.epochs = 10
+        self.epochs = 8
 
     def forward(self, text):
         embedded_text = self.embedding(text).mean(dim=1)
